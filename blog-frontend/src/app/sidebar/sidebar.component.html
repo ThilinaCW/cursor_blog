@@ -1,0 +1,18 @@
+<div class="mag-sidebar">
+  <div class="sidebar-section">
+    <h4 class="sidebar-title">Categories</h4>
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border spinner-border-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div *ngIf="!loading && categories.length > 0" class="sidebar-links">
+      <a *ngFor="let category of categories" 
+         [routerLink]="['/category', category]" 
+         class="sidebar-link">{{ category }}</a>
+    </div>
+    <div *ngIf="!loading && categories.length === 0" class="text-muted">
+      No categories yet
+    </div>
+  </div>
+</div> 

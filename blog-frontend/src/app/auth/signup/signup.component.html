@@ -1,0 +1,183 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <h1>Create Your Account</h1>
+      <p>Join our community and start sharing your stories</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success" role="alert">
+      {{ success }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="row">
+        <!-- First Name -->
+        <div class="col-md-6 mb-3">
+          <label for="firstName" class="form-label">First Name *</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            class="form-control"
+            [class.is-invalid]="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched"
+            placeholder="Enter your first name">
+          <div *ngIf="getFieldError('firstName')" class="invalid-feedback">
+            {{ getFieldError('firstName') }}
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-md-6 mb-3">
+          <label for="lastName" class="form-label">Last Name *</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            class="form-control"
+            [class.is-invalid]="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched"
+            placeholder="Enter your last name">
+          <div *ngIf="getFieldError('lastName')" class="invalid-feedback">
+            {{ getFieldError('lastName') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Username *</label>
+        <div class="input-group">
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            [class.is-invalid]="(signupForm.get('username')?.invalid && signupForm.get('username')?.touched) || !usernameAvailable"
+            [class.is-valid]="usernameAvailable && signupForm.get('username')?.valid && signupForm.get('username')?.touched"
+            placeholder="Choose a unique username"
+            (input)="onUsernameChange()">
+          <span *ngIf="checkingUsername" class="input-group-text">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Checking...</span>
+            </div>
+          </span>
+          <span *ngIf="!checkingUsername && usernameAvailable && signupForm.get('username')?.valid && signupForm.get('username')?.touched" class="input-group-text text-success">
+            <i class="fas fa-check"></i>
+          </span>
+          <span *ngIf="!checkingUsername && !usernameAvailable && signupForm.get('username')?.touched" class="input-group-text text-danger">
+            <i class="fas fa-times"></i>
+          </span>
+        </div>
+        <div *ngIf="getFieldError('username')" class="invalid-feedback d-block">
+          {{ getFieldError('username') }}
+        </div>
+        <div *ngIf="!usernameAvailable && signupForm.get('username')?.touched" class="text-danger small">
+          Username is already taken.
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address *</label>
+        <div class="input-group">
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="(signupForm.get('email')?.invalid && signupForm.get('email')?.touched) || !emailAvailable"
+            [class.is-valid]="emailAvailable && signupForm.get('email')?.valid && signupForm.get('email')?.touched"
+            placeholder="Enter your email address"
+            (input)="onEmailChange()">
+          <span *ngIf="checkingEmail" class="input-group-text">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Checking...</span>
+            </div>
+          </span>
+          <span *ngIf="!checkingEmail && emailAvailable && signupForm.get('email')?.valid && signupForm.get('email')?.touched" class="input-group-text text-success">
+            <i class="fas fa-check"></i>
+          </span>
+          <span *ngIf="!checkingEmail && !emailAvailable && signupForm.get('email')?.touched" class="input-group-text text-danger">
+            <i class="fas fa-times"></i>
+          </span>
+        </div>
+        <div *ngIf="getFieldError('email')" class="invalid-feedback d-block">
+          {{ getFieldError('email') }}
+        </div>
+        <div *ngIf="!emailAvailable && signupForm.get('email')?.touched" class="text-danger small">
+          Email is already registered.
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Password -->
+        <div class="col-md-6 mb-3">
+          <label for="password" class="form-label">Password *</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+            placeholder="Create a password">
+          <div *ngIf="getFieldError('password')" class="invalid-feedback">
+            {{ getFieldError('password') }}
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="col-md-6 mb-3">
+          <label for="confirmPassword" class="form-label">Confirm Password *</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            class="form-control"
+            [class.is-invalid]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
+            placeholder="Confirm your password">
+          <div *ngIf="getFieldError('confirmPassword')" class="invalid-feedback">
+            {{ getFieldError('confirmPassword') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="mb-4">
+        <label for="bio" class="form-label">Bio (Optional)</label>
+        <textarea
+          id="bio"
+          formControlName="bio"
+          class="form-control"
+          rows="3"
+          placeholder="Tell us a little about yourself..."></textarea>
+        <div *ngIf="getFieldError('bio')" class="invalid-feedback d-block">
+          {{ getFieldError('bio') }}
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid">
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg"
+          [disabled]="loading || !signupForm.valid || !usernameAvailable || !emailAvailable">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Login Link -->
+    <div class="signup-footer">
+      <p class="text-center mb-0">
+        Already have an account? 
+        <a routerLink="/login" class="text-decoration-none">Sign in here</a>
+      </p>
+    </div>
+  </div>
+</div> 

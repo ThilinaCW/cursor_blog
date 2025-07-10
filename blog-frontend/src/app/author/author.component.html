@@ -1,0 +1,43 @@
+<div class="container magazine-container mt-5">
+  <div class="author-header mb-5">
+    <h1 class="mag-title">{{ author }}</h1>
+    <p class="mag-subtitle">Stories by {{ author }}</p>
+  </div>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="row">
+    <div *ngIf="posts.length === 0" class="col-12 text-center">
+      <p class="mag-text">No stories found by this author.</p>
+    </div>
+    
+    <div *ngFor="let post of posts" class="col-md-6 col-lg-4 mb-4">
+      <div class="mag-card h-100">
+        <div class="mag-card-img-container">
+          <img [src]="post.imageUrl || 'https://images.unsplash.com/photo-1495020683877-95802f6f488a?w=400&h=250&fit=crop'" 
+               [alt]="post.title" 
+               class="mag-card-img">
+        </div>
+        <div class="mag-card-body">
+          <h3 class="mag-card-title">{{ post.title }}</h3>
+          <p class="mag-card-date">{{ post.createdDate | date:'MMM d, y' }}</p>
+          <div *ngIf="post.categories && post.categories.length > 0" class="mag-tags mb-2">
+            <span *ngFor="let category of post.categories" class="mag-tag">{{ category }}</span>
+          </div>
+          <p class="mag-card-excerpt">{{ post.content | slice:0:150 }}...</p>
+          <button class="btn btn-outline-primary btn-sm" (click)="viewPost(post.id)">
+            Read More
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

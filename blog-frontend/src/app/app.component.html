@@ -1,0 +1,99 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm magazine-nav">
+  <!-- View More Button - Outside container for full left positioning -->
+  <div class="view-more-section">
+    <button class="view-more-btn" (click)="toggleLeftSidebar()">
+      <div class="hamburger-lines">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </button>
+  </div>
+  
+  <div class="container">
+    <a class="navbar-brand mag-title fs-2" routerLink="/">Lumora</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
+        </li>
+        <li class="nav-item" *ngIf="currentUser?.role === 'Admin' || currentUser?.role === 1">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin</a>
+        </li>
+        <li class="nav-item" *ngIf="!currentUser">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        </li>
+        <li class="nav-item" *ngIf="!currentUser">
+          <a class="nav-link" routerLink="/signup" routerLinkActive="active">Sign Up</a>
+        </li>
+        <li class="nav-item dropdown" *ngIf="currentUser">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ currentUser.username }}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" (click)="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Left Sidebar Overlay -->
+<div class="left-sidebar-overlay" [class.active]="leftSidebarOpen" (click)="closeLeftSidebar()"></div>
+
+<!-- Left Sidebar Menu -->
+<div class="left-sidebar" [class.open]="leftSidebarOpen">
+  <div class="left-sidebar-header">
+    <h3>Menu</h3>
+    <button class="close-btn" (click)="closeLeftSidebar()">&times;</button>
+  </div>
+  <div class="left-sidebar-content">
+    <div class="sidebar-menu-section">
+      <h4>Categories</h4>
+      <ul class="sidebar-menu-list">
+        <li><a routerLink="/category/food" (click)="closeLeftSidebar()">Food & Dining</a></li>
+        <li><a routerLink="/category/travel" (click)="closeLeftSidebar()">Travel</a></li>
+        <li><a routerLink="/category/culture" (click)="closeLeftSidebar()">Culture</a></li>
+        <li><a routerLink="/category/lifestyle" (click)="closeLeftSidebar()">Lifestyle</a></li>
+        <li><a routerLink="/category/opinion" (click)="closeLeftSidebar()">Opinion</a></li>
+      </ul>
+      </div>
+    
+    <div class="sidebar-menu-section">
+      <h4>Authors</h4>
+      <ul class="sidebar-menu-list">
+        <li><a routerLink="/author/Sarah Johnson" (click)="closeLeftSidebar()">Sarah Johnson</a></li>
+        <li><a routerLink="/author/Michael Chen" (click)="closeLeftSidebar()">Michael Chen</a></li>
+        <li><a routerLink="/author/Emily Rodriguez" (click)="closeLeftSidebar()">Emily Rodriguez</a></li>
+        <li><a routerLink="/author/David Thompson" (click)="closeLeftSidebar()">David Thompson</a></li>
+      </ul>
+      </div>
+    
+    <div class="sidebar-menu-section">
+      <h4>Quick Links</h4>
+      <ul class="sidebar-menu-list">
+        <li *ngIf="currentUser"><a routerLink="/create" (click)="closeLeftSidebar()">Write a Story</a></li>
+        <li><a routerLink="/about" (click)="closeLeftSidebar()">About Us</a></li>
+        <li *ngIf="!currentUser"><a routerLink="/login" (click)="closeLeftSidebar()">Login</a></li>
+        <li *ngIf="!currentUser"><a routerLink="/signup" (click)="closeLeftSidebar()">Sign Up</a></li>
+        <li *ngIf="currentUser"><a href="#" (click)="logout(); closeLeftSidebar()">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<footer class="footer mt-5 py-4 bg-light border-top magazine-footer">
+  <div class="container text-center">
+    <span class="text-muted">&copy; {{ currentYear }} Lumora. All rights reserved. &middot; <a routerLink="/about">About</a> &middot; <a href="#">Contact</a> &middot; <a href="#">Submissions</a></span>
+  </div>
+</footer>

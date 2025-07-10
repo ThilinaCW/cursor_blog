@@ -1,0 +1,29 @@
+.container {
+  max-width: 600px;
+}
+form {
+  background: #fff;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.btn {
+  min-width: 100px;
+}
+
+.magazine-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.mag-form-card {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+}
+.mag-title {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222;
+}

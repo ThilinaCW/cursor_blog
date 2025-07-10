@@ -1,0 +1,186 @@
+<!-- Wide Featured Slider (edge-to-edge with padding) - Only show when not searching -->
+<div class="slider-wrapper" *ngIf="!searchTerm">
+  <section class="featured-slider mb-5">
+    <div id="featuredCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button *ngFor="let post of featuredPosts; let i = index" 
+                type="button" 
+                data-bs-target="#featuredCarousel" 
+                [attr.data-bs-slide-to]="i" 
+                [class.active]="i === 0"
+                [attr.aria-label]="'Slide ' + (i + 1)">
+        </button>
+      </div>
+      
+      <div class="carousel-inner">
+        <div *ngFor="let post of featuredPosts; let i = index" 
+             class="carousel-item" 
+             [class.active]="i === 0">
+          <div class="featured-slide">
+            <div class="featured-image-container">
+              <img [src]="post.imageUrl || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'" 
+                   class="featured-image" 
+                   [alt]="post.title">
+              <div class="featured-overlay"></div>
+            </div>
+            <div class="featured-content">
+              <div class="featured-meta">
+                <span class="featured-date">{{ post.createdDate | date:'MMM d' }}</span>
+              </div>
+              <h2 class="featured-title">
+                <a [routerLink]="['/post', post.id]">{{ post.title }}</a>
+              </h2>
+              <div class="featured-byline">
+                <span>Words by {{ post.author }}</span>
+              </div>
+              <div *ngIf="post.categories && post.categories.length > 0" class="featured-tags">
+                <span *ngFor="let category of post.categories" class="featured-tag">{{ category }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<div class="container-fluid magazine-home mt-5">
+  <div class="row">
+    <div class="col-12">
+      <!-- Search Results Header -->
+      <div *ngIf="searchTerm" class="search-results-header mb-4">
+        <h1 class="mb-2">Search Results</h1>
+        <p class="text-muted">Found {{ totalPosts }} result{{ totalPosts !== 1 ? 's' : '' }} for "{{ searchTerm }}"</p>
+      </div>
+
+      <!-- Regular Header -->
+      <div *ngIf="!searchTerm" class="latest-stories-header">
+        <div class="text-center">
+          <h1 class="mb-2">Latest Stories</h1>
+          <small class="post-count text-muted" *ngIf="totalPosts > 0">
+            Showing {{ morePosts.length }} of {{ totalPosts }} stories (Page {{ currentPage }} of {{ totalPages }})
+          </small>
+        </div>
+      </div>
+
+      <!-- Search Section -->
+      <div class="search-section mb-4">
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <div class="search-container">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  class="form-control search-input" 
+                  placeholder="Search stories by title, author, or content..."
+                  [(ngModel)]="searchTerm"
+                  (keyup.enter)="onSearch()"
+                  (input)="onSearchInput()">
+                <button 
+                  class="btn btn-dark search-btn" 
+                  type="button" 
+                  (click)="onSearch()">
+                  <i class="fas fa-search"></i> Search
+                </button>
+              </div>
+              <div *ngIf="searchTerm" class="search-info mt-2">
+                <small class="text-muted">
+                  Searching for: "{{ searchTerm }}" 
+                  <button class="btn btn-sm btn-outline-secondary ms-2" (click)="clearSearch()">
+                    Clear
+                  </button>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="loading-indicator">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading stories...</p>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <div *ngIf="!loading && !error" class="row">
+        <div *ngIf="morePosts.length === 0" class="col-12 text-center">
+          <p class="mag-text">No stories found.</p>
+        </div>
+        
+        <div *ngFor="let post of morePosts" class="col-md-6 col-lg-3 mb-4">
+          <div class="mag-card h-100">
+            <div class="mag-card-img-container">
+              <img [src]="post.imageUrl || 'https://images.unsplash.com/photo-1495020683877-95802f6f488a?w=400&h=250&fit=crop'" 
+                   [alt]="post.title" 
+                   class="mag-card-img">
+            </div>
+            <div class="mag-card-body">
+              <h3 class="mag-card-title">{{ post.title }}</h3>
+              <p class="mag-card-author">By {{ post.author }}</p>
+              <p class="mag-card-date">{{ post.createdDate | date:'MMM d, y' }}</p>
+              <div *ngIf="post.categories && post.categories.length > 0" class="mag-tags mb-2">
+                <span *ngFor="let category of post.categories" class="mag-tag">{{ category }}</span>
+              </div>
+              <p class="mag-card-excerpt">{{ post.content | slice:0:150 }}...</p>
+              <button class="btn btn-outline-primary btn-sm" (click)="viewPost(post.id)">
+                Read More
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination Controls - Always show if there are posts -->
+      <div *ngIf="!loading && !error && morePosts.length > 0" class="pagination-container mt-5">
+        <nav aria-label="Blog posts pagination">
+          <ul class="pagination justify-content-center">
+            <!-- Previous Page -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            
+            <!-- Page Numbers -->
+            <li *ngFor="let page of getPageNumbers()" 
+                class="page-item" 
+                [class.active]="page === currentPage"
+                [class.disabled]="page === -1">
+              <a *ngIf="page !== -1" 
+                 class="page-link" 
+                 href="javascript:void(0)" 
+                 (click)="onPageChange(page)">{{ page }}</a>
+              <span *ngIf="page === -1" class="page-link ellipsis">...</span>
+            </li>
+            
+            <!-- Next Page -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- No stories found -->
+      <div *ngIf="!loading && !error && morePosts.length === 0 && featuredPosts.length === 0" class="loading-indicator">
+        <p>No stories found.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+.comment {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff !important;
+}
+
+.comment-content p {
+  white-space: pre-wrap;
+}
+
+.comment-actions {
+  opacity: 0.7;
+}
+
+.comment:hover .comment-actions {
+  opacity: 1;
+}
+
+.edit-form textarea {
+  resize: vertical;
+} 

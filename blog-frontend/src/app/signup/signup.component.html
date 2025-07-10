@@ -1,0 +1,96 @@
+<div class="container signup-container mt-5">
+  <div class="signup-card">
+    <div class="signup-header text-center mb-4">
+      <h1 class="signup-title">Create Account</h1>
+      <p class="signup-subtitle">Join our community of storytellers</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="submit()" class="signup-form">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="username"
+          formControlName="username" 
+          placeholder="Choose a username"
+          [class.is-invalid]="signupForm.get('username')?.invalid && signupForm.get('username')?.touched"
+        />
+        <div *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched" class="invalid-feedback">
+          <div *ngIf="signupForm.get('username')?.errors?.['required']">Username is required</div>
+          <div *ngIf="signupForm.get('username')?.errors?.['minlength']">Username must be at least 3 characters</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input 
+          type="email" 
+          class="form-control" 
+          id="email"
+          formControlName="email" 
+          placeholder="Enter your email"
+          [class.is-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+        />
+        <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched" class="invalid-feedback">
+          <div *ngIf="signupForm.get('email')?.errors?.['required']">Email is required</div>
+          <div *ngIf="signupForm.get('email')?.errors?.['email']">Please enter a valid email</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="password"
+          formControlName="password" 
+          placeholder="Create a password"
+          [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+        />
+        <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched" class="invalid-feedback">
+          <div *ngIf="signupForm.get('password')?.errors?.['required']">Password is required</div>
+          <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="confirmPassword"
+          formControlName="confirmPassword" 
+          placeholder="Confirm your password"
+          [class.is-invalid]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
+        />
+        <div *ngIf="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched" class="invalid-feedback">
+          <div *ngIf="signupForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</div>
+        </div>
+        <div *ngIf="signupForm.errors?.['passwordMismatch'] && signupForm.get('confirmPassword')?.touched" class="invalid-feedback">
+          Passwords do not match
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger mb-3">
+        {{ error }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary w-100 mb-3" 
+        [disabled]="signupForm.invalid || loading"
+      >
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {{ loading ? 'Creating Account...' : 'Create Account' }}
+      </button>
+
+      <div class="text-center">
+        <p class="mb-0">
+          Already have an account? 
+          <a routerLink="/login" class="login-link">Sign in here</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div> 

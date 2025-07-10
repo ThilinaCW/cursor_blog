@@ -1,0 +1,227 @@
+body {
+  background-color: #f8f9fa;
+  padding-top: 30px; /* Further reduced padding to account for navbar height */
+}
+
+.navbar {
+  border-bottom: 0.5px solid #eaeaea;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background-color: black !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem; /* Further reduced space below navbar */
+  padding: rem 0; /* Add vertical padding to navbar */
+  position: relative;
+}
+
+/* View More Button Styles */
+.view-more-section {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1031;
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+}
+
+.view-more-btn {
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 40px;
+  height: 40px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .hamburger-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 20px;
+    height: 16px;
+    justify-content: center;
+    
+    .line {
+      width: 100%;
+      height: 2px;
+      background-color: white;
+      border-radius: 1px;
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+/* Left Sidebar Overlay */
+.left-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Left Sidebar Menu */
+.left-sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: white;
+  z-index: 1050;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  
+  &.open {
+    left: 0;
+  }
+  
+  .left-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    
+    h3 {
+      font-family: 'Merriweather', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #6c757d;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: #e9ecef;
+        color: #2c3e50;
+      }
+    }
+  }
+  
+  .left-sidebar-content {
+    padding: 1.5rem;
+    
+    .sidebar-menu-section {
+      margin-bottom: 2rem;
+      
+      h4 {
+        font-family: 'Merriweather', serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+      }
+      
+      .sidebar-menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        li {
+          margin-bottom: 0.5rem;
+          
+          a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            
+            &:hover {
+              background-color: #f8f9fa;
+              color: #b22234;
+              transform: translateX(4px);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.footer {
+  background: #f8f9fa;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.magazine-nav {
+  border-bottom: 1px solid #ececec;
+  .navbar-brand {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: white !important;
+  }
+  .nav-link {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: white !important;
+    margin-left: 1.5rem;
+    transition: color 0.2s;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: #b22234 !important;
+    text-decoration: underline;
+  }
+}
+
+.magazine-footer {
+  background: #f8f9fa;
+  color: #888;
+  font-size: 1rem;
+  a {
+    color: #b22234;
+    text-decoration: none;
+    margin: 0 0.5rem;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}

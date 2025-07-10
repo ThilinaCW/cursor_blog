@@ -1,0 +1,198 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Admin Dashboard</h1>
+      
+      <!-- Error Alert -->
+      <div *ngIf="error" class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" [class.active]="activeTab === 'dashboard'" 
+                  (click)="setActiveTab('dashboard')" type="button">
+            Dashboard
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" [class.active]="activeTab === 'users'" 
+                  (click)="setActiveTab('users')" type="button">
+            Pending Users
+            <span *ngIf="dashboard?.pendingUsers" class="badge bg-warning ms-2">{{ dashboard?.pendingUsers }}</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" [class.active]="activeTab === 'posts'" 
+                  (click)="setActiveTab('posts')" type="button">
+            Pending Posts
+            <span *ngIf="dashboard?.pendingPosts" class="badge bg-warning ms-2">{{ dashboard?.pendingPosts }}</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Dashboard Overview -->
+      <div *ngIf="activeTab === 'dashboard' && dashboard" class="row">
+        <div class="col-md-3 mb-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-primary">{{ dashboard.totalUsers }}</h5>
+              <p class="card-text">Total Users</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-warning">{{ dashboard.pendingUsers }}</h5>
+              <p class="card-text">Pending Users</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-success">{{ dashboard.totalPosts }}</h5>
+              <p class="card-text">Total Posts</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-warning">{{ dashboard.pendingPosts }}</h5>
+              <p class="card-text">Pending Posts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Users Tab -->
+      <div *ngIf="activeTab === 'users'">
+        <h3>Pending User Approvals</h3>
+        <div *ngIf="pendingUsers.length === 0" class="alert alert-info">
+          No pending users to approve.
+        </div>
+        
+        <div *ngFor="let user of pendingUsers" class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <h5 class="card-title">{{ getFullName(user) }}</h5>
+                <p class="card-text">
+                  <strong>Username:</strong> {{ user.username }}<br>
+                  <strong>Email:</strong> {{ user.email }}<br>
+                  <strong>Bio:</strong> {{ user.bio || 'No bio provided' }}<br>
+                  <strong>Joined:</strong> {{ formatDate(user.createdDate) }}
+                </p>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-success me-2" (click)="approveUser(user.id)">
+                  <i class="bi bi-check-circle"></i> Approve
+                </button>
+                <button class="btn btn-danger" data-bs-toggle="modal" [attr.data-bs-target]="'#rejectUserModal' + user.id">
+                  <i class="bi bi-x-circle"></i> Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reject User Modal -->
+        <div *ngFor="let user of pendingUsers" class="modal fade" [id]="'rejectUserModal' + user.id" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Reject User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to reject <strong>{{ getFullName(user) }}</strong>?</p>
+                <div class="mb-3">
+                  <label for="rejectionReason" class="form-label">Rejection Reason:</label>
+                  <textarea class="form-control" id="rejectionReason" rows="3" 
+                            [(ngModel)]="rejectionReason" placeholder="Please provide a reason for rejection..."></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="rejectUser(user.id)" data-bs-dismiss="modal">
+                  Reject User
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Posts Tab -->
+      <div *ngIf="activeTab === 'posts'">
+        <h3>Pending Post Approvals</h3>
+        <div *ngIf="pendingPosts.length === 0" class="alert alert-info">
+          No pending posts to approve.
+        </div>
+        
+        <div *ngFor="let post of pendingPosts" class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">
+                  <strong>Author:</strong> {{ post.author }}<br>
+                  <strong>Content:</strong> {{ post.content.substring(0, 200) }}{{ post.content.length > 200 ? '...' : '' }}<br>
+                  <strong>Categories:</strong> {{ post.categories?.join(', ') || 'None' }}<br>
+                  <strong>Created:</strong> {{ formatDate(post.createdDate) }}
+                </p>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-success me-2" (click)="approvePost(post.id)">
+                  <i class="bi bi-check-circle"></i> Approve
+                </button>
+                <button class="btn btn-secondary me-2" (click)="viewPost(post.id)">
+                  <i class="bi bi-eye"></i> View Full Post
+                </button>
+                <button class="btn btn-danger" data-bs-toggle="modal" [attr.data-bs-target]="'#rejectPostModal' + post.id">
+                  <i class="bi bi-x-circle"></i> Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reject Post Modal -->
+        <div *ngFor="let post of pendingPosts" class="modal fade" [id]="'rejectPostModal' + post.id" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Reject Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to reject <strong>"{{ post.title }}"</strong>?</p>
+                <div class="mb-3">
+                  <label for="rejectionReason" class="form-label">Rejection Reason:</label>
+                  <textarea class="form-control" id="rejectionReason" rows="3" 
+                            [(ngModel)]="rejectionReason" placeholder="Please provide a reason for rejection..."></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="rejectPost(post.id)" data-bs-dismiss="modal">
+                  Reject Post
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
