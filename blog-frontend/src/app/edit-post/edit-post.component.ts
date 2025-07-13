@@ -4,7 +4,8 @@ import { BlogService, BlogPost } from '../blog.service';
 import { CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { FormsModule } from '@angular/forms';
-import Quill from 'quill';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80';
 
@@ -29,15 +30,40 @@ export class EditPostComponent implements OnInit {
   categories = '';
   userId: string = '';
 
-  quillInstance: Quill | null = null;
+  quillInstance: any | null = null;
+  contentLoaded = false;
+
+  modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+      ['clean'],
+      ['image']
+    ],
+    imageResize: {
+      // You can add config options here if needed
+    }
+  };
 
   constructor(
     private route: ActivatedRoute,
     private blogService: BlogService,
-    private router: Router
-  ) {}
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.error = 'Invalid post ID.';
@@ -55,9 +81,8 @@ export class EditPostComponent implements OnInit {
         this.categories = post.categories ? post.categories.join(', ') : '';
         this.userId = (post as any).userId || '';
         this.loading = false;
-        if (this.quillInstance && this.content) {
-          this.setQuillContent(this.content);
-        }
+        this.contentLoaded = true;
+        this.trySetQuillContent();
       },
       error: () => {
         this.error = 'Failed to load post.';
@@ -66,19 +91,18 @@ export class EditPostComponent implements OnInit {
     });
   }
 
-  onEditorCreated(editor: Quill) {
+  onEditorCreated(editor: any) {
     this.quillInstance = editor;
-    if (this.content) {
-      this.setQuillContent(this.content);
-    }
+    this.trySetQuillContent();
   }
 
-  setQuillContent(content: string) {
-    if (this.quillInstance) {
-      // If your content is HTML, use dangerouslyPasteHTML
-      this.quillInstance.clipboard.dangerouslyPasteHTML(content);
-      // If your content is a Delta, use setContents
-      // this.quillInstance.setContents(delta);
+  trySetQuillContent() {
+    debugger
+    if (this.quillInstance && this.contentLoaded) {
+      window.setTimeout(() => {
+        this.quillInstance.clipboard.dangerouslyPasteHTML(this.content);     
+      }, 500);
+     
     }
   }
 

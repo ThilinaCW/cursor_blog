@@ -11,7 +11,8 @@
   "files": [
     "src/main.ts",
     "src/main.server.ts",
-    "server.ts"
+    "server.ts",
+    "src/app/quill-register.ts"
   ],
   "include": [
     "src/**/*.d.ts"
