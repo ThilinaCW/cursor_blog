@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, AdminDashboard, User, BlogPost } from '../admin.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
@@ -138,6 +138,19 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => {
         this.error = 'Failed to reject post.';
+      }
+    });
+  }
+
+  deletePost(postId: string) {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+    this.adminService.deletePost(postId).subscribe({
+      next: () => {
+        this.pendingPosts = this.pendingPosts.filter(p => p.id !== postId);
+        this.loadDashboard();
+      },
+      error: () => {
+        this.error = 'Failed to delete post.';
       }
     });
   }

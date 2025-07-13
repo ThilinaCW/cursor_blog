@@ -1,34 +1,32 @@
-<div class="container magazine-form mt-5">
-  <div class="mag-form-card p-4">
-    <h2 class="mag-title mb-4">Create New Story</h2>
-    <form [formGroup]="postForm" (ngSubmit)="submit()">
-      <div class="mb-3">
-        <label class="form-label">Title</label>
-        <input class="form-control" formControlName="title" required />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Content</label>
-        <textarea class="form-control" formControlName="content" rows="7" required></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Author</label>
-        <input class="form-control" formControlName="author" required />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Image URL</label>
-        <input class="form-control" formControlName="imageUrl" placeholder="Optional image URL" />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Categories/Tags</label>
-        <input class="form-control" formControlName="categories" placeholder="Enter categories separated by commas (e.g., Food, Culture, Travel)" />
-        <small class="form-text text-muted">Separate multiple categories with commas</small>
-      </div>
-      <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" formControlName="isFeatured" id="isFeatured">
-        <label class="form-check-label" for="isFeatured">Mark as Featured</label>
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="loading">Create</button>
-      <div *ngIf="error" class="alert alert-danger mt-2">{{ error }}</div>
-    </form>
-  </div>
+<div class="mag-form-card p-4">
+  <h2 class="mag-title mb-4">Create New Story</h2>
+  <form (ngSubmit)="submit()">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input class="form-control" [(ngModel)]="title" name="title" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Content</label>
+      <quill-editor [(ngModel)]="content" name="content" [style]="{minHeight: '200px'}"></quill-editor>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Author</label>
+      <input class="form-control" [(ngModel)]="author" name="author" readonly />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Image URL</label>
+      <input class="form-control" [(ngModel)]="imageUrl" name="imageUrl" placeholder="Optional image URL" />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Categories/Tags</label>
+      <input class="form-control" [(ngModel)]="categories" name="categories" placeholder="Enter categories separated by commas (e.g., Food, Culture, Travel)" />
+      <small class="form-text text-muted">Separate multiple categories with commas</small>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" [(ngModel)]="isFeatured" name="isFeatured" id="isFeatured">
+      <label class="form-check-label" for="isFeatured">Mark as Featured</label>
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="loading">Create</button>
+    <div *ngIf="error" class="alert alert-danger mt-2">{{ error }}</div>
+  </form>
 </div>

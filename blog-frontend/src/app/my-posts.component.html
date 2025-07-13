@@ -1,0 +1,30 @@
+<div class="container magazine-list mt-5">
+  <h2 class="mag-title mb-4">My Posts</h2>
+  <div *ngIf="loading" class="alert alert-info">Loading your posts...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="!loading && !error && posts.length === 0" class="alert alert-warning">You have not created any posts yet.</div>
+  <div *ngIf="!loading && posts.length > 0">
+    <div class="list-group">
+      <a *ngFor="let post of posts" class="list-group-item list-group-item-action mb-2">
+        <h5 class="mb-1"  [routerLink]="['/post', post.id]">
+          {{ post.title }}
+          <span *ngIf="post.isApproved" class="badge bg-success ms-2">Approved</span>
+          <span *ngIf="!post.isApproved && !post.rejectionReason" class="badge bg-warning ms-2">Pending</span>
+          <span *ngIf="!post.isApproved && post.rejectionReason" class="badge bg-danger ms-2">Rejected</span>
+        </h5>
+        <div *ngIf="!post.isApproved && post.rejectionReason" class="text-danger small mb-2">
+          <strong>Reason:</strong> {{ post.rejectionReason }}
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <small class="text-muted">{{ post.createdDate | date:'longDate' }}</small>
+          <button class="btn btn-sm btn-outline-primary" [routerLink]="['/edit', post.id]" (click)="$event.stopPropagation()">
+            Edit
+          </button>
+        </div>
+        <div class="mt-2 text-truncate">
+          {{ getContentPreview(post.content, 120) }}
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

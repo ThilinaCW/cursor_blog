@@ -144,23 +144,28 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-8">
-                <h5 class="card-title">{{ post.title }}</h5>
+                <h5 class="card-title" [routerLink]="['/post', post.id]" style="cursor:pointer; text-decoration:underline;">
+                  {{ post.title }}
+                </h5>
                 <p class="card-text">
                   <strong>Author:</strong> {{ post.author }}<br>
-                  <strong>Content:</strong> {{ post.content.substring(0, 200) }}{{ post.content.length > 200 ? '...' : '' }}<br>
+                  <strong>Content:</strong> <span [innerHTML]="post.content | slice:0:200"></span><span *ngIf="post.content.length > 200">...</span><br>
                   <strong>Categories:</strong> {{ post.categories?.join(', ') || 'None' }}<br>
                   <strong>Created:</strong> {{ formatDate(post.createdDate) }}
                 </p>
               </div>
               <div class="col-md-4 text-end">
-                <button class="btn btn-success me-2" (click)="approvePost(post.id)">
+                <button class="btn btn-success btn-admin-action me-2" (click)="approvePost(post.id)">
                   <i class="bi bi-check-circle"></i> Approve
                 </button>
-                <button class="btn btn-secondary me-2" (click)="viewPost(post.id)">
+                <button class="btn btn-secondary btn-admin-action me-2" (click)="viewPost(post.id)">
                   <i class="bi bi-eye"></i> View Full Post
                 </button>
-                <button class="btn btn-danger" data-bs-toggle="modal" [attr.data-bs-target]="'#rejectPostModal' + post.id">
+                <button class="btn btn-warning btn-admin-action" data-bs-toggle="modal" [attr.data-bs-target]="'#rejectPostModal' + post.id">
                   <i class="bi bi-x-circle"></i> Reject
+                </button>
+                <button class="btn btn-danger btn-admin-action me-2" (click)="deletePost(post.id)">
+                  <i class="bi bi-trash"></i> Delete
                 </button>
               </div>
             </div>

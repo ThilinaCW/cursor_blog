@@ -13,6 +13,8 @@ export interface BlogPost {
   categories?: string[];
   updatedDate?: string;
   isActive?: boolean;
+  isApproved?: boolean;
+  rejectionReason?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -59,6 +61,10 @@ export class BlogService {
 
   getPostsByAuthor(author: string): Observable<BlogPost[]> {
     return this.http.get<BlogPost[]>(`${this.apiUrl}/authors/${encodeURIComponent(author)}`);
+  }
+
+  getPostsByUserId(userId: string): Observable<BlogPost[]> {
+    return this.http.get<BlogPost[]>(`${this.apiUrl}/user/${userId}`);
   }
 
   getCategories(): Observable<string[]> {

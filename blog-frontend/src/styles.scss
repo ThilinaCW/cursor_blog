@@ -2,6 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@700&display=swap');
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import 'quill/dist/quill.snow.css';
 // Add your custom styles below
 
 body {
@@ -53,4 +54,16 @@ a, .accent {
 ::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 4px;
+}
+
+.ql-container {
+  min-height: 400px;
+  height: auto;
+  font-size: 1.1rem;
+}
+
+.ql-editor {
+  min-height: 400px;
+  height: auto;
+  overflow-y: visible;
 }

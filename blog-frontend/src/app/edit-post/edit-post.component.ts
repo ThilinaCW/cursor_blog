@@ -1,39 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BlogService, BlogPost } from '../blog.service';
 import { CommonModule } from '@angular/common';
+import { QuillModule } from 'ngx-quill';
+import { FormsModule } from '@angular/forms';
+import Quill from 'quill';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80';
 
 @Component({
   selector: 'app-edit-post',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, QuillModule],
   templateUrl: './edit-post.component.html',
   styleUrl: './edit-post.component.scss'
 })
 export class EditPostComponent implements OnInit {
-  postForm: FormGroup;
   loading = true;
   error = '';
   postId!: string;
 
+  // Direct properties for ngModel
+  title = '';
+  content = '';
+  author = '';
+  imageUrl = '';
+  isFeatured = false;
+  categories = '';
+  userId: string = '';
+
+  quillInstance: Quill | null = null;
+
   constructor(
-    private fb: FormBuilder,
     private route: ActivatedRoute,
     private blogService: BlogService,
     private router: Router
-  ) {
-    this.postForm = this.fb.group({
-      title: ['', Validators.required],
-      content: ['', Validators.required],
-      author: ['', Validators.required],
-      imageUrl: [''],
-      isFeatured: [false],
-      categories: ['']
-    });
-  }
+  ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -42,19 +44,20 @@ export class EditPostComponent implements OnInit {
       this.loading = false;
       return;
     }
-    
     this.postId = id;
     this.blogService.getPost(this.postId).subscribe({
       next: (post: BlogPost) => {
-        this.postForm.patchValue({
-          title: post.title,
-          content: post.content,
-          author: post.author,
-          imageUrl: post.imageUrl,
-          isFeatured: post.isFeatured,
-          categories: post.categories ? post.categories.join(', ') : ''
-        });
+        this.title = post.title || '';
+        this.content = post.content || '';
+        this.author = post.author || '';
+        this.imageUrl = post.imageUrl || '';
+        this.isFeatured = post.isFeatured ?? false;
+        this.categories = post.categories ? post.categories.join(', ') : '';
+        this.userId = (post as any).userId || '';
         this.loading = false;
+        if (this.quillInstance && this.content) {
+          this.setQuillContent(this.content);
+        }
       },
       error: () => {
         this.error = 'Failed to load post.';
@@ -63,19 +66,35 @@ export class EditPostComponent implements OnInit {
     });
   }
 
+  onEditorCreated(editor: Quill) {
+    this.quillInstance = editor;
+    if (this.content) {
+      this.setQuillContent(this.content);
+    }
+  }
+
+  setQuillContent(content: string) {
+    if (this.quillInstance) {
+      // If your content is HTML, use dangerouslyPasteHTML
+      this.quillInstance.clipboard.dangerouslyPasteHTML(content);
+      // If your content is a Delta, use setContents
+      // this.quillInstance.setContents(delta);
+    }
+  }
+
   submit() {
-    if (this.postForm.invalid) return;
     this.loading = true;
-    const value = this.postForm.value;
-    if (!value.imageUrl) {
-      value.imageUrl = DEFAULT_IMAGE;
-    }
-    // Convert categories string to array
-    if (value.categories) {
-      value.categories = value.categories.split(',').map((cat: string) => cat.trim()).filter((cat: string) => cat.length > 0);
-    } else {
-      value.categories = [];
-    }
+    const value: any = {
+      title: this.title,
+      content: this.content,
+      author: this.author,
+      imageUrl: this.imageUrl || DEFAULT_IMAGE,
+      isFeatured: this.isFeatured,
+      categories: this.categories
+        ? this.categories.split(',').map((cat: string) => cat.trim()).filter((cat: string) => cat.length > 0)
+        : [],
+      userId: this.userId
+    };
     this.blogService.updatePost(this.postId, value).subscribe({
       next: () => this.router.navigate(['/post', this.postId]),
       error: () => {

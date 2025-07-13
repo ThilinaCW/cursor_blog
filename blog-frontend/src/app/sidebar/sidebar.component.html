@@ -1,5 +1,8 @@
 <div class="mag-sidebar">
   <div class="sidebar-section">
+    <div *ngIf="isLoggedIn" class="sidebar-links">
+      <a [routerLink]="['/create']" class="sidebar-link">Create New Story</a>
+    </div>
     <h4 class="sidebar-title">Categories</h4>
     <div *ngIf="loading" class="text-center">
       <div class="spinner-border spinner-border-sm" role="status">

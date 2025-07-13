@@ -20,7 +20,7 @@
          class="mag-tag">{{ category }}</a>
     </div>
     <div class="mag-content mb-5">
-      <p style="white-space: pre-line;">{{ post?.content }}</p>
+      <div class="ql-editor" [innerHTML]="post?.content"></div>
     </div>
     <div class="action-buttons">
       <button class="btn btn-secondary me-2" (click)="goBack()">Back to Posts</button>

@@ -10,11 +10,13 @@ import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { AdminRedirectGuard } from './auth/admin-redirect.guard';
+import { AuthGuard } from './auth/auth.guard';
+import { MyPostsComponent } from './my-posts.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'post/:id', component: BlogDetailComponent },
-  { path: 'create', component: CreatePostComponent },
+  { path: 'create', component: CreatePostComponent, canActivate: [AuthGuard] },
   { path: 'edit/:id', component: EditPostComponent },
   { path: 'category/:category', component: CategoryComponent },
   { path: 'author/:author', component: AuthorComponent },
@@ -22,5 +24,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'admin', component: AdminDashboardComponent },
-  { path: 'admin/posts/:id', component: BlogDetailComponent }
+  { path: 'admin/posts/:id', component: BlogDetailComponent },
+  { path: 'my-posts', component: MyPostsComponent, canActivate: [AuthGuard] }
 ];

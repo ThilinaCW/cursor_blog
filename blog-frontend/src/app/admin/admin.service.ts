@@ -98,4 +98,8 @@ export class AdminService {
     const rejectRequest: RejectRequest = { reason };
     return this.http.post(`${this.apiUrl}/posts/${postId}/reject`, rejectRequest, { headers: this.getHeaders() });
   }
+
+  deletePost(postId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/posts/${postId}`, { headers: this.getHeaders() });
+  }
 } 
